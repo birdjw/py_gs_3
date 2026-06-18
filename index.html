@@ -1,0 +1,1215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Python Fundamentals Session 3</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #5d667a;
+      --line: #d8ddeb;
+      --brand: #3057d5;
+      --brand-dark: #1f3fa6;
+      --accent: #f3b13f;
+      --success: #1b8754;
+      --danger: #b42318;
+      --code-bg: #111827;
+      --code-ink: #e8eefc;
+      --soft-blue: #f0f4ff;
+      --soft-yellow: #fff8e9;
+      --soft-green: #eefaf4;
+      --soft-purple: #f5f1ff;
+      --fac-bg: #fff7e6;
+      --fac-border: #efc66f;
+      --shadow: 0 14px 30px rgba(21, 34, 66, 0.10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.5; }
+    a { color: inherit; }
+    .site-header { background: linear-gradient(135deg, #182848 0%, #3057d5 100%); color: white; padding: 44px 24px; }
+    .header-inner { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; }
+    h1 { font-size: clamp(2rem, 4vw, 4rem); line-height: 1.02; margin: 0; letter-spacing: -0.04em; }
+    h2 { font-size: clamp(1.35rem, 2.2vw, 2rem); margin: 0 0 12px; letter-spacing: -0.02em; }
+    h3 { margin: 0 0 8px; }
+    p { margin-top: 0; }
+    .subtitle { max-width: 780px; font-size: 1.12rem; color: rgba(255,255,255,0.88); margin: 16px 0 0; }
+    .eyebrow { margin: 0 0 8px; text-transform: uppercase; letter-spacing: .12em; font-weight: 750; color: var(--accent); font-size: .78rem; }
+    .header-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 10px 16px; border-radius: 999px; border: 1px solid var(--line); background: white; color: var(--ink); font-weight: 750; text-decoration: none; cursor: pointer; box-shadow: 0 2px 8px rgba(21, 34, 66, 0.08); font: inherit; }
+    .button.primary { background: var(--accent); color: #1a2438; border-color: transparent; }
+    .button.secondary { background: var(--soft-blue); color: var(--brand-dark); border-color: #cbd8ff; }
+    .button.ghost { background: rgba(255,255,255,0.12); color: white; border-color: rgba(255,255,255,0.35); }
+    .button.small { min-height: 36px; padding: 8px 12px; font-size: .9rem; }
+    .button:hover, .button:focus { transform: translateY(-1px); }
+    main { max-width: 1180px; margin: 0 auto; padding: 26px 20px 56px; }
+    .panel, .concept-card, .exercise-card { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--shadow); padding: 24px; margin-bottom: 22px; }
+    .concept-card, .exercise-card { scroll-margin-top: 24px; }
+    .hero-grid, .wrap-grid, .two-col { display: grid; grid-template-columns: 1.5fr 1fr; gap: 22px; }
+    .steps { padding-left: 1.2rem; margin: 0; }
+    .steps li { margin: 10px 0; }
+    .rhythm-card, .callout { background: var(--soft-blue); border: 1px solid #cbd8ff; border-radius: 18px; padding: 18px; }
+    .flow { margin-top: 12px; padding: 14px; border-radius: 14px; background: white; font-weight: 850; text-align: center; color: var(--brand-dark); }
+    .toolbar { display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center; }
+    .hint { margin: 4px 0 0; color: var(--muted); font-size: .92rem; }
+    .progress-label { font-weight: 800; margin-bottom: 8px; }
+    .progress-bar { height: 12px; background: #e7eaf3; border-radius: 999px; overflow: hidden; }
+    #progressFill { height: 100%; width: 0%; background: var(--success); transition: width .2s ease; }
+    .agenda-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+    .agenda-item { display: block; text-decoration: none; border: 1px solid var(--line); border-radius: 16px; padding: 14px; background: #fbfcff; }
+    .agenda-item strong { display: block; margin-bottom: 4px; }
+    .agenda-item span { color: var(--muted); font-size: .9rem; }
+    .tag { display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 8px; font-size: .74rem; font-weight: 850; margin-bottom: 7px; background: var(--soft-blue); color: var(--brand-dark); }
+    .tag.exercise { background: var(--soft-green); color: #0b6840; }
+    .section-list { display: grid; gap: 22px; }
+    .section-header { display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: start; }
+    .goal, .summary { color: var(--muted); margin: 0; }
+    .meta-pill { border-radius: 999px; padding: 8px 12px; background: #eef2ff; color: var(--brand-dark); font-weight: 800; white-space: nowrap; }
+    .concept-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 18px; margin-top: 18px; }
+    .key-points, .common-list, .checklist { margin: 0; padding-left: 1.2rem; }
+    .key-points li, .common-list li { margin: 6px 0; }
+    .callout-box { margin-top: 16px; background: var(--soft-purple); border: 1px solid #d9ccff; border-radius: 16px; padding: 14px 16px; }
+    .example-stack { display: grid; gap: 14px; }
+    .code-card { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: #fbfcff; }
+    .code-card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+    .code-card-title { font-weight: 850; }
+    .predict-box, .task-box { border-radius: 16px; padding: 14px 16px; margin: 18px 0; }
+    .predict-box { background: var(--soft-yellow); border: 1px solid #f3d49a; }
+    .task-box { background: #f7f9ff; border: 1px solid #cbd8ff; }
+    .button-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 16px 0; }
+    .done-check { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; color: var(--success); }
+    .done-check input { inline-size: 20px; block-size: 20px; }
+    details { margin: 14px 0; }
+    summary { font-weight: 850; cursor: pointer; margin-bottom: 10px; }
+    pre { margin: 0; background: var(--code-bg); color: var(--code-ink); border-radius: 0; padding: 18px; overflow: auto; tab-size: 4; font-size: .94rem; line-height: 1.55; }
+    details pre { border-radius: 18px; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    .facilitator-only { display: none; }
+    body.facilitator-unlocked .facilitator-only { display: block; }
+    .facilitator-panel { border: 2px solid var(--fac-border); background: var(--fac-bg); border-radius: 18px; padding: 18px; margin-top: 18px; }
+    .solution-box { margin-top: 14px; }
+    .solution-reveal { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 18px; }
+    .solution-reveal-label { font-weight: 800; margin-bottom: 10px; }
+    .solution-code-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+    .solution-code-row input { min-height: 36px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; font: inherit; font-size: .9rem; width: 140px; }
+    .solution-unlocked { margin-top: 14px; }
+    .facilitator-banner { display: none; position: sticky; top: 0; z-index: 10; background: #182848; color: white; padding: 10px 20px; box-shadow: 0 8px 16px rgba(21, 34, 66, 0.18); }
+    body.facilitator-unlocked .facilitator-banner { display: block; }
+    .facilitator-banner-inner { max-width: 1180px; margin: 0 auto; display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.62); z-index: 50; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .modal-backdrop.show { display: flex; }
+    .modal { width: min(540px, 100%); border-radius: 24px; background: white; padding: 24px; box-shadow: 0 24px 80px rgba(0,0,0,0.25); }
+    .modal-form { display: grid; gap: 12px; margin-top: 16px; }
+    .modal-form label { font-weight: 800; }
+    .modal-form input { min-height: 46px; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; font: inherit; }
+    .modal-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+    .error { color: var(--danger); font-weight: 800; min-height: 1.2em; }
+    .toast { position: fixed; right: 18px; bottom: 18px; padding: 12px 16px; border-radius: 999px; background: #172033; color: white; box-shadow: var(--shadow); font-weight: 800; opacity: 0; transform: translateY(8px); transition: all .2s ease; z-index: 60; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .wrapup ul { margin-top: 0; }
+    .small-muted { color: var(--muted); font-size: .92rem; }
+    @media (max-width: 900px) { .concept-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) {
+      .header-inner, .hero-grid, .toolbar, .section-header, .wrap-grid, .two-col { grid-template-columns: 1fr; }
+      .header-actions { justify-content: flex-start; }
+      .toolbar { position: static; }
+      .button-row { align-items: stretch; }
+      .button, .done-check { width: 100%; }
+      .modal-actions { justify-content: stretch; }
+    }
+    @media print {
+      .site-header, .toolbar, .button-row, .facilitator-banner, .modal-backdrop { display: none !important; }
+      body { background: white; }
+      .panel, .concept-card, .exercise-card { box-shadow: none; break-inside: avoid; }
+    }
+    /* Prism layout overrides */
+    pre[class*="language-"] { margin: 0 !important; background: var(--code-bg) !important; color: var(--code-ink); padding: 18px !important; border-radius: 0; overflow: auto; tab-size: 4; font-size: .94rem !important; line-height: 1.55; }
+    details pre[class*="language-"] { border-radius: 18px; }
+    /* Predict input */
+    .predict-input { display: block; width: 100%; margin-top: 10px; padding: 8px 10px; border: 1px solid #f3d49a; border-radius: 10px; font: inherit; font-size: .92rem; resize: vertical; background: rgba(255,255,255,0.6); color: var(--ink); }
+    /* Prev/Next section nav */
+    .section-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); gap: 12px; }
+    /* Agenda scroll-spy */
+    .agenda-item.active { border-color: var(--brand); background: var(--soft-blue); box-shadow: 0 0 0 2px #cbd8ff; }
+    /* Agenda filter */
+    .agenda-filter { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .agenda-filter .button.active-filter { background: var(--brand); color: white; border-color: transparent; }
+    .collapsible-panel { padding: 0; overflow: hidden; }
+    .collapsible-panel summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px; margin: 0; list-style: none; }
+    .collapsible-panel summary::-webkit-details-marker { display: none; }
+    .collapsible-title { display: flex; flex-direction: column; gap: 4px; }
+    .collapsible-title h2 { margin: 0; }
+    .collapsible-note { color: var(--muted); font-size: .92rem; }
+    .collapsible-panel summary::after { content: 'Show'; color: var(--brand-dark); font-weight: 800; }
+    .collapsible-panel[open] summary::after { content: 'Hide'; }
+    .collapsible-body { padding: 0 24px 24px; }
+    /* Facilitator timer */
+    .timer-widget { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .timer-display { font-size: 1.3rem; font-weight: 900; font-variant-numeric: tabular-nums; min-width: 3.5ch; letter-spacing: -0.02em; }
+    .timer-display.warning { color: var(--accent); }
+    .timer-display.expired { color: #ef4444; }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.min.css" />
+</head>
+<body>
+  <div class="facilitator-banner" aria-live="polite">
+    <div class="facilitator-banner-inner">
+      <strong>Facilitator mode is on.</strong>
+      <div class="timer-widget">
+        <span id="timerDisplay" class="timer-display" aria-live="polite">—</span>
+        <input id="timerMinutes" type="number" min="1" max="60" value="5" style="width:52px;min-height:34px;padding:4px 6px;border-radius:10px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.12);color:white;font:inherit;font-size:.9rem;" aria-label="Timer minutes" />
+        <button id="timerStart" class="button small ghost" type="button">Start</button>
+        <button id="timerReset" class="button small ghost" type="button">Reset</button>
+      </div>
+      <button id="lockFacilitator" class="button small" type="button">Lock facilitator mode</button>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div>
+        <p class="eyebrow">Beginner Python Workshop</p>
+        <h1>Python Fundamentals: Session 3</h1>
+      </div>
+      <div class="header-actions">
+        <a class="button primary" href="#start">Start session</a>
+        <a class="button" target="_blank" rel="noopener" href="https://www.pythoncompiler.io/">Open PythonCompiler.io</a>
+        <button id="openFacilitator" class="button ghost" type="button">Facilitator</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel facilitator-only" aria-label="Facilitator overview">
+      <h2>Facilitator overview</h2>
+      <div class="two-col">
+        <div>
+          <h3>Recommended flow</h3>
+          <ol class="steps">
+            <li>Teach each concept card briefly before the matching exercise.</li>
+            <li>Use demo code when the idea needs to be seen, not only described.</li>
+            <li>Ask for a prediction before running exercise code.</li>
+            <li>Keep exercises short and use the debriefs to lock in the idea.</li>
+          </ol>
+        </div>
+        <div>
+          <h3>Timing target</h3>
+          <p>For a 60-75 minute session, keep the deck-aligned exercises in order. If the class is slower, preserve the concept explanations and shorten hands-on time by solving the last few together.</p>
+          <p class="small-muted">The passphrase gate is intentionally lightweight. It keeps the default view focused, but the content is not meant to be secure.</p>
+        </div>
+      </div>
+    </section>
+
+    <details class="panel agenda collapsible-panel">
+      <summary>
+        <div class="collapsible-title">
+          <h2>Session map</h2>
+          <span class="collapsible-note">Expand to jump to a concept or exercise.</span>
+        </div>
+      </summary>
+      <div class="collapsible-body">
+        <div class="agenda-filter" id="agendaFilter">
+          <button class="button small active-filter" data-filter="all" type="button">All</button>
+          <button class="button small" data-filter="concept" type="button">Concepts only</button>
+          <button class="button small" data-filter="exercise" type="button">Exercises only</button>
+        </div>
+        <div id="agendaGrid" class="agenda-grid"></div>
+      </div>
+    </details>
+
+    <section id="sections" class="section-list" aria-live="polite"></section>
+
+  </main>
+
+  <div id="facilitatorModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h2 id="modalTitle">Enable facilitator content</h2>
+      <p>Enter the passphrase to show facilitator notes and solution blocks on this same page.</p>
+      <form id="facilitatorForm" class="modal-form">
+        <label for="facilitatorPassphrase">Passphrase</label>
+        <input id="facilitatorPassphrase" type="password" autocomplete="off" />
+        <div id="facilitatorError" class="error" aria-live="polite"></div>
+        <div class="modal-actions">
+          <button id="cancelFacilitator" class="button" type="button">Stay on attendee view</button>
+          <button class="button primary" type="submit">Unlock</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.js" data-manual></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+  <script>
+    const FACILITATOR_PASSPHRASE = 'facilitator';
+    const SOLUTION_PASSPHRASE = 'reveal';
+    const sections = [
+    {
+        "type": "concept",
+        "id": "session-2-recap",
+        "title": "Session 2 recap",
+        "topic": "Functions and comparisons we are building on",
+        "time": "6 min",
+        "summary": "Last session we went deeper on functions: defining them, parameters and arguments, return values, default values, and comparison operators that return booleans. Today we put those booleans to work: first to make decisions with if statements, then to repeat work with loops.",
+        "key_points": [
+            "Functions name a reusable block of code we can call with different inputs.",
+            "Parameters are the inputs; return sends a value back to the caller.",
+            "print() shows a value; return gives a value back to the program.",
+            "Comparison operators (==, !=, >, <, >=, <=) return True or False.",
+            "Booleans are the answers to yes/no questions Python can act on."
+        ],
+        "callout": "Session 3 builds on comparisons: first an if decides whether to run a block, then a loop repeats a block while a comparison stays True.",
+        "examples": [
+            {
+                "title": "A function from last session",
+                "code": "def calculate_tax(price):\n    rate = 0.08\n    return price * rate\n\nprint(calculate_tax(49.99))\nprint(calculate_tax(99.99))\n"
+            },
+            {
+                "title": "Comparisons return booleans",
+                "code": "budget = 1000\nexpense = 1200\n\nprint(expense <= budget)   # False\nprint(expense > budget)    # True\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Keep this as a quick bridge, not a full reteach of functions.",
+                "Highlight the comparison example: it returns True or False, which is exactly what an if statement and a while loop both check.",
+                "Tell them today has two themes: making decisions (if) first, then repeating work (loops)."
+            ],
+            "transition": "Move into decisions: a comparison gives us True or False, and an if statement acts on that answer."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "making-decisions",
+        "title": "Making decisions with if",
+        "topic": "Run a block only when a condition is True",
+        "time": "7 min",
+        "summary": "A comparison gives us True or False. An if statement uses that answer to decide whether to run a block of code. If the condition is True, the indented body runs; if it is False, Python skips it.",
+        "key_points": [
+            "if is followed by a condition and a colon.",
+            "The indented body runs only when the condition is True.",
+            "When the condition is False, Python skips the indented body.",
+            "Indentation shows which lines belong to the if.",
+            "The condition is usually a comparison that returns a boolean."
+        ],
+        "callout": "if checks a True/False answer and runs its block only when the answer is True.",
+        "examples": [
+            {
+                "title": "Running a block when True",
+                "code": "temperature = 38\n\nif temperature > 30:\n    print(\"It is a hot day\")\n    print(\"Stay hydrated\")\n\nprint(\"Done checking\")\n"
+            },
+            {
+                "title": "Skipping the block when False",
+                "code": "stock = 12\n\nif stock == 0:\n    print(\"Out of stock!\")\n\nprint(\"Stock check complete\")\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Connect straight back to the recap: the condition is just a comparison returning True or False.",
+                "Point at the colon and the indentation: they define the block, exactly like a function body.",
+                "Run the second example and show that the print inside if is skipped while the last line still runs."
+            ],
+            "transition": "Now handle the False case too: if / else gives a fallback path."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "if-else",
+        "title": "if / else: two paths",
+        "topic": "Do one thing or another",
+        "time": "6 min",
+        "summary": "Often you want one action when a condition is True and a different action when it is False. else gives the if statement a fallback block that runs only when the condition is False.",
+        "key_points": [
+            "else has no condition of its own; it catches every False case.",
+            "Exactly one of the two blocks runs, never both.",
+            "else lines up with its if and ends with a colon.",
+            "Use if / else when there are exactly two possible paths.",
+            "The else block runs only when the if condition is False."
+        ],
+        "callout": "With if / else, Python always runs exactly one of the two blocks.",
+        "examples": [
+            {
+                "title": "Two-way decision",
+                "code": "balance = 40\nprice = 50\n\nif balance >= price:\n    print(\"Purchase approved\")\nelse:\n    print(\"Not enough funds\")\n"
+            },
+            {
+                "title": "Either / or",
+                "code": "order_total = 75\n\nif order_total >= 50:\n    print(\"Free shipping\")\nelse:\n    print(\"Shipping costs $5\")\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Stress that exactly one branch runs: it is a fork in the road, not two separate checks.",
+                "Change the numbers live so the class sees the other branch fire.",
+                "Line up if and else visually so they see they are part of one statement."
+            ],
+            "transition": "What about more than two outcomes? elif chains several conditions together."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "elif-chains",
+        "title": "elif: choosing among many paths",
+        "topic": "More than two outcomes",
+        "time": "7 min",
+        "summary": "When there are several possible outcomes, elif (short for 'else if') lets you test more conditions in order. Python checks each condition top to bottom and runs the first block whose condition is True, then skips the rest.",
+        "key_points": [
+            "An if can be followed by one or more elif branches.",
+            "Python checks conditions top to bottom and stops at the first True one.",
+            "Only one block in the whole chain ever runs.",
+            "A final else (optional) catches anything no condition matched.",
+            "Order matters: put the most specific or highest conditions first."
+        ],
+        "callout": "Python runs the first branch whose condition is True and skips every branch after it.",
+        "examples": [
+            {
+                "title": "Grading a score",
+                "code": "score = 82\n\nif score >= 90:\n    print(\"A\")\nelif score >= 80:\n    print(\"B\")\nelif score >= 70:\n    print(\"C\")\nelse:\n    print(\"F\")\n"
+            },
+            {
+                "title": "Order priority tiers",
+                "code": "order_total = 250\n\nif order_total >= 500:\n    print(\"Priority: Platinum\")\nelif order_total >= 200:\n    print(\"Priority: Gold\")\nelif order_total >= 50:\n    print(\"Priority: Silver\")\nelse:\n    print(\"Priority: Standard\")\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Trace the grading example out loud: 82 fails >= 90, passes >= 80, so it stops at B.",
+                "Emphasize 'first True wins' and that order matters; flip two branches to show a wrong result.",
+                "Clarify elif vs separate ifs: a chain runs at most one block, separate ifs can each run."
+            ],
+            "transition": "Now practice an if / elif / else chain on a real classification."
+        }
+    },
+    {
+        "type": "exercise",
+        "id": "shipping-tier",
+        "title": "Practice: Shipping Tier",
+        "topic": "if / elif / else",
+        "time": "8 min",
+        "goal": "Use an if / elif / else chain to pick a shipping speed based on the order total.",
+        "predict": "An order total of 120 should land in which tier: Express, Standard, or Economy?",
+        "task": "Fill in the conditions so totals of 200 or more are Express, 75 or more are Standard, and anything else is Economy.",
+        "starter": "order_total = 120\n\n# 200 or more  -> Express\n# 75 or more   -> Standard\n# otherwise    -> Economy\nif order_total >= 200:\n    shipping = \"Express\"\nelif _____:          # 1. 75 or more\n    shipping = \"Standard\"\nelse:\n    shipping = _____  # 2. the leftover case\n\n# Don't touch below this line\nprint(\"Order total:\", order_total)\nprint(\"Shipping tier:\", shipping)\n",
+        "solution": "order_total = 120\n\n# 200 or more  -> Express\n# 75 or more   -> Standard\n# otherwise    -> Economy\nif order_total >= 200:\n    shipping = \"Express\"\nelif order_total >= 75:\n    shipping = \"Standard\"\nelse:\n    shipping = \"Economy\"\n\n# Don't touch below this line\nprint(\"Order total:\", order_total)\nprint(\"Shipping tier:\", shipping)\n",
+        "facilitator": {
+            "rhythm": "First conditionals rep. Have them predict the tier before running, then trace why 120 skips Express.",
+            "predict_answer": "120 is Standard: it fails >= 200 but passes >= 75.",
+            "watch_for": [
+                "Using if instead of elif for the second test, which can let two blocks run.",
+                "Ordering the conditions wrong (a low threshold first catches everything).",
+                "Forgetting the >= and using > so the boundary value lands in the wrong tier."
+            ],
+            "debrief": "Python checks top to bottom and stops at the first True condition, so the order of the branches decides the result."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "combining-conditions",
+        "title": "Combining conditions with and, or, not",
+        "topic": "Build bigger True/False questions",
+        "time": "7 min",
+        "summary": "Sometimes a decision depends on more than one condition. and, or, and not combine or flip booleans so a single if can ask a more complete question.",
+        "key_points": [
+            "and is True only when both sides are True.",
+            "or is True when at least one side is True.",
+            "not flips a boolean: not True is False, not False is True.",
+            "You can combine comparisons, like price > 0 and price < 100.",
+            "Each side of and / or should be its own complete comparison."
+        ],
+        "callout": "and needs both sides True; or needs just one side True; not flips True and False.",
+        "examples": [
+            {
+                "title": "and and or",
+                "code": "in_stock = True\nprice = 40\n\nif in_stock and price <= 50:\n    print(\"Add to cart\")\n\nif price < 10 or price > 100:\n    print(\"Unusual price\")\nelse:\n    print(\"Normal price\")\n"
+            },
+            {
+                "title": "not flips a boolean",
+                "code": "is_weekend = False\n\nif not is_weekend:\n    print(\"Warehouse is open\")\nelse:\n    print(\"Closed today\")\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Build a quick truth table on the board for and / or with True/False inputs.",
+                "Stress that each side of and / or is its own full comparison (a common beginner trap).",
+                "Show not on a single boolean variable so it stays simple before the exercise."
+            ],
+            "transition": "Now combine conditions in an eligibility check."
+        }
+    },
+    {
+        "type": "exercise",
+        "id": "eligibility-check",
+        "title": "Practice: Free Shipping Check",
+        "topic": "Combining conditions with and / or",
+        "time": "8 min",
+        "goal": "Use and / or to decide whether an order qualifies for free shipping.",
+        "predict": "An order of $60 from a member: free shipping or not, if the rule is $50+ OR a member?",
+        "task": "Set qualifies to True when the order total is 50 or more, OR the customer is a member.",
+        "starter": "order_total = 60\nis_member = True\n\n# Free shipping if the order is 50 or more, OR the customer is a member.\nqualifies = _____    # combine the two conditions with or\n\n# Don't touch below this line\nif qualifies:\n    print(\"Free shipping\")\nelse:\n    print(\"Shipping costs $5\")\n",
+        "solution": "order_total = 60\nis_member = True\n\n# Free shipping if the order is 50 or more, OR the customer is a member.\nqualifies = order_total >= 50 or is_member\n\n# Don't touch below this line\nif qualifies:\n    print(\"Free shipping\")\nelse:\n    print(\"Shipping costs $5\")\n",
+        "facilitator": {
+            "rhythm": "Conditionals capstone. Ask them to predict, then flip is_member to False and re-predict.",
+            "predict_answer": "It qualifies: the order is 60 (>= 50), and being a member would qualify on its own too.",
+            "watch_for": [
+                "Writing order_total >= 50 or is_member == as an incomplete comparison.",
+                "Using and instead of or, which would require both to be true.",
+                "Comparing is_member to True with ==; the boolean can be used directly."
+            ],
+            "debrief": "or is True when either side is True, so a big order or a membership each unlocks free shipping on its own."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "why-loops",
+        "title": "Why loops?",
+        "topic": "Repeat work instead of copying it",
+        "time": "5 min",
+        "summary": "An if decides whether to run a block once. A loop repeats a block instead, often while a condition stays True. Functions let us reuse code by name; loops let us repeat code automatically, so we don't copy the same lines over and over.",
+        "key_points": [
+            "An if runs a block once when its condition is True; a loop can run it many times.",
+            "Without loops, repeating an action means copying the same line many times.",
+            "Copied lines are hard to change and easy to get wrong.",
+            "A loop runs the same block of code multiple times.",
+            "Loops are ideal when you don't know in advance how many items you'll process."
+        ],
+        "callout": "If you find yourself copying a line and changing one small thing each time, that is a signal to use a loop.",
+        "examples": [
+            {
+                "title": "The copy-paste problem",
+                "code": "print(\"Processing order 1\")\nprint(\"Processing order 2\")\nprint(\"Processing order 3\")\nprint(\"Processing order 4\")\nprint(\"Processing order 5\")\n\n# What if there are 1000 orders?\n"
+            },
+            {
+                "title": "The loop solution",
+                "code": "for order_number in range(1, 6):\n    print(\"Processing order\", order_number)\n\n# Change one number to process 1000 orders.\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Start with the pain, like the functions session did: repeated, copied lines.",
+                "Do not explain range() syntax yet. Just show that one small block replaces many copied lines.",
+                "The goal is for them to want a loop before they learn the exact syntax."
+            ],
+            "transition": "Start with the while loop: repeat while a condition stays True."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "while-loop",
+        "title": "The while loop",
+        "topic": "Repeat while a condition is True",
+        "time": "7 min",
+        "summary": "A while loop repeats its indented body for as long as a condition is True. Before each pass, Python checks the condition; when it becomes False, the loop stops.",
+        "key_points": [
+            "while is followed by a condition and a colon.",
+            "The indented body runs once each time the condition is True.",
+            "Python re-checks the condition before every pass.",
+            "Something inside the loop must eventually make the condition False.",
+            "If the condition never becomes False, the loop runs forever."
+        ],
+        "callout": "A while loop is built from a comparison: it keeps going while that comparison stays True.",
+        "examples": [
+            {
+                "title": "Counting up to a limit",
+                "code": "count = 1\nwhile count <= 3:\n    print(\"Count is\", count)\n    count = count + 1\n\nprint(\"Done!\")\n"
+            },
+            {
+                "title": "Reading the condition each pass",
+                "code": "balance = 100\nwhile balance > 0:\n    print(\"Balance:\", balance)\n    balance = balance - 25\n\nprint(\"Account empty\")\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Trace the first example out loud: check condition, run body, update count, repeat.",
+                "Stress that the body must change something the condition depends on.",
+                "Foreshadow the next card: forgetting to update the counter causes an infinite loop."
+            ],
+            "transition": "Next, look at the counter pattern and the increment shortcuts that update it."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "counters-and-increment",
+        "title": "Counters and increment operators",
+        "topic": "Updating a value each pass",
+        "time": "7 min",
+        "summary": "Most while loops use a counter: a variable that changes every pass. Augmented assignment operators like += and -= are shortcuts for updating that variable.",
+        "key_points": [
+            "count = count + 1 adds one to count; count += 1 does the same thing.",
+            "+=, -=, *=, and /= update a variable using its current value.",
+            "The counter usually moves the loop toward its stopping condition.",
+            "Forgetting to update the counter creates an infinite loop.",
+            "Press the stop button (or Ctrl+C) if a loop runs forever."
+        ],
+        "callout": "total += price means total = total + price. The variable must already have a value before you update it.",
+        "examples": [
+            {
+                "title": "+= as a shortcut",
+                "code": "count = 0\ncount += 1     # same as count = count + 1\ncount += 1\nprint(count)   # 2\n\ntotal = 0\ntotal += 50\ntotal += 25\nprint(total)   # 75\n"
+            },
+            {
+                "title": "A counter inside a while loop",
+                "code": "orders_left = 5\nwhile orders_left > 0:\n    print(\"Packing an order...\")\n    orders_left -= 1\n\nprint(\"All orders packed\")\n"
+            },
+            {
+                "title": "Warning: infinite loop",
+                "code": "count = 1\n# while count <= 3:\n#     print(count)\n# Nothing changes count, so this never stops!\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Show count = count + 1 first, then introduce += as the shortcut.",
+                "Demonstrate (or describe) an infinite loop, then show that updating the counter fixes it.",
+                "Tell them how to stop a runaway loop in their editor before the exercise."
+            ],
+            "transition": "Now write a while loop with a counter that updates each pass."
+        }
+    },
+    {
+        "type": "exercise",
+        "id": "restock-inventory",
+        "title": "Practice: Restock Inventory",
+        "topic": "while loops and counters",
+        "time": "8 min",
+        "goal": "Use a while loop to count how many deliveries are needed to reach the target stock.",
+        "predict": "Starting at 20 units, adding 15 per delivery, how many deliveries reach 80?",
+        "task": "Complete the while loop so stock increases by units_per_delivery each pass and deliveries counts each delivery.",
+        "starter": "target = 80\nstock = 20\nunits_per_delivery = 15\ndeliveries = 0\n\n# Keep restocking while stock is below target.\nwhile stock < target:\n    pass          # 1. add units_per_delivery to stock\n                  # 2. add 1 to deliveries\n\n# Don't touch below this line\nprint(\"Final stock:\", stock)\nprint(\"Deliveries needed:\", deliveries)\n",
+        "solution": "target = 80\nstock = 20\nunits_per_delivery = 15\ndeliveries = 0\n\n# Keep restocking while stock is below target.\nwhile stock < target:\n    stock += units_per_delivery\n    deliveries += 1\n\n# Don't touch below this line\nprint(\"Final stock:\", stock)\nprint(\"Deliveries needed:\", deliveries)\n",
+        "facilitator": {
+            "rhythm": "First while-loop rep. Have them trace stock after each pass before running it.",
+            "predict_answer": "It takes 4 deliveries: 20 to 35 to 50 to 65 to 80. Final stock is 80.",
+            "watch_for": [
+                "Forgetting to update stock, which causes an infinite loop.",
+                "Updating deliveries but not stock (or the reverse).",
+                "Using = instead of += and overwriting the running value."
+            ],
+            "debrief": "The condition stock < target stays True until enough deliveries push stock to the target. The counter is what ends the loop."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "for-range",
+        "title": "The for loop with range()",
+        "topic": "Repeat a known number of times",
+        "time": "7 min",
+        "summary": "A for loop runs its body once for each value it is given. range(n) produces the numbers 0 up to but not including n, which is perfect when you know how many times to repeat.",
+        "key_points": [
+            "for variable in range(n): runs the body n times.",
+            "range(5) gives 0, 1, 2, 3, 4 — it stops before 5.",
+            "The loop variable takes the next value each pass.",
+            "for loops do not need a manual counter; range() handles it.",
+            "Use a for loop when the number of repeats is known."
+        ],
+        "callout": "range(n) starts at 0 and stops before n, so range(5) gives five values: 0 to 4.",
+        "examples": [
+            {
+                "title": "Repeat a fixed number of times",
+                "code": "for i in range(5):\n    print(\"Sending email\", i)\n\n# Prints i = 0, 1, 2, 3, 4\n"
+            },
+            {
+                "title": "while vs for for the same job",
+                "code": "# while version needs a manual counter\ncount = 0\nwhile count < 3:\n    print(\"Hello\")\n    count += 1\n\n# for version handles the counter for you\nfor count in range(3):\n    print(\"Hello\")\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Emphasize the off-by-one: range(5) stops before 5.",
+                "Contrast with while: for loops are cleaner when the count is known.",
+                "Point out range() handles the counter so there is no infinite-loop risk here."
+            ],
+            "transition": "Next, see the full range(start, stop, step) form for more control."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "range-arguments",
+        "title": "range(start, stop, step)",
+        "topic": "Controlling where a range begins, ends, and steps",
+        "time": "6 min",
+        "summary": "range() can take up to three arguments: where to start, where to stop (exclusive), and how big each step is. This lets you count from any number, skip values, or count down.",
+        "key_points": [
+            "range(stop): start defaults to 0, step defaults to 1.",
+            "range(start, stop): begins at start, ends before stop.",
+            "range(start, stop, step): step controls the jump between values.",
+            "The stop value is always excluded.",
+            "A negative step counts downward."
+        ],
+        "callout": "range(1, 11) gives 1 through 10. The stop value 11 is never included.",
+        "examples": [
+            {
+                "title": "Start, stop, and step",
+                "code": "for n in range(1, 6):\n    print(n)        # 1, 2, 3, 4, 5\n\nfor n in range(0, 21, 5):\n    print(n)        # 0, 5, 10, 15, 20\n"
+            },
+            {
+                "title": "Counting down",
+                "code": "for n in range(5, 0, -1):\n    print(n)        # 5, 4, 3, 2, 1\n\nprint(\"Liftoff!\")\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Walk through each argument: start, stop, step.",
+                "Re-stress that stop is exclusive — the most common beginner surprise.",
+                "Show the negative step for counting down."
+            ],
+            "transition": "Now use a for loop and range() to total a series of values."
+        }
+    },
+    {
+        "type": "exercise",
+        "id": "ramp-up-shipments",
+        "title": "Practice: Ramp-Up Shipments",
+        "topic": "for loops with range() and an accumulator",
+        "time": "8 min",
+        "goal": "Use a for loop to total the boxes shipped as the daily amount ramps up.",
+        "predict": "Day 1 ships 1 box, day 2 ships 2, and so on. What is the total after 5 days?",
+        "task": "Complete the for loop so it adds each day's box count (1, 2, 3, ...) to total_boxes.",
+        "starter": "days = 5\ntotal_boxes = 0\n\n# Day 1 ships 1 box, day 2 ships 2 boxes, and so on.\nfor day in range(1, days + 1):\n    pass          # add this day's box count to total_boxes\n\n# Don't touch below this line\nprint(\"Days:\", days)\nprint(\"Total boxes shipped:\", total_boxes)\n",
+        "solution": "days = 5\ntotal_boxes = 0\n\n# Day 1 ships 1 box, day 2 ships 2 boxes, and so on.\nfor day in range(1, days + 1):\n    total_boxes += day\n\n# Don't touch below this line\nprint(\"Days:\", days)\nprint(\"Total boxes shipped:\", total_boxes)\n",
+        "facilitator": {
+            "rhythm": "First for-loop rep. Point at range(1, days + 1) and ask which values day takes.",
+            "predict_answer": "The total is 15: 1 + 2 + 3 + 4 + 5.",
+            "watch_for": [
+                "Using range(1, days), which stops at 4 and misses the last day.",
+                "Resetting total_boxes to 0 inside the loop.",
+                "Adding 1 each pass instead of the day number."
+            ],
+            "debrief": "range(1, days + 1) gives 1 through days because stop is exclusive. The accumulator builds the running total one pass at a time."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "iterate-collections",
+        "title": "Looping over lists and strings",
+        "topic": "for item in collection",
+        "time": "7 min",
+        "summary": "A for loop can walk through a collection directly. Given a list or a string, the loop variable takes each item (or each character) in turn — no range() or index needed.",
+        "key_points": [
+            "for item in my_list: gives you each element in order.",
+            "for letter in my_string: gives you each character in order.",
+            "You do not need range() to loop over a collection's items.",
+            "An accumulator variable can total or count items as you go.",
+            "This is the most common kind of loop you will write."
+        ],
+        "callout": "for price in prices: reads each value in the list, one per pass, in order.",
+        "examples": [
+            {
+                "title": "Totalling a list of prices",
+                "code": "prices = [20, 5, 12]\ntotal = 0\n\nfor price in prices:\n    total += price\n\nprint(\"Cart total:\", total)\n"
+            },
+            {
+                "title": "Looping over a string",
+                "code": "product_code = \"AB12\"\nfor character in product_code:\n    print(character)\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Contrast with range(): here the loop variable is the item itself, not a number.",
+                "This is a soft preview of next session's Lists topic, kept simple.",
+                "Reuse the accumulator idea: start at 0, add each item."
+            ],
+            "transition": "Now total a list of order amounts with a for loop."
+        }
+    },
+    {
+        "type": "exercise",
+        "id": "total-orders",
+        "title": "Practice: Total the Orders",
+        "topic": "Looping over a list with an accumulator",
+        "time": "8 min",
+        "goal": "Loop over a list of order amounts and add them into a running total.",
+        "predict": "What is the total of 45, 120, 99, and 12?",
+        "task": "Complete the for loop so each amount in order_amounts is added to total.",
+        "starter": "order_amounts = [45, 120, 99, 12]\ntotal = 0\n\n# Add each amount to total.\nfor amount in order_amounts:\n    pass          # add amount to total\n\n# Don't touch below this line\nprint(\"Number of orders:\", len(order_amounts))\nprint(\"Total sales:\", total)\n",
+        "solution": "order_amounts = [45, 120, 99, 12]\ntotal = 0\n\n# Add each amount to total.\nfor amount in order_amounts:\n    total += amount\n\n# Don't touch below this line\nprint(\"Number of orders:\", len(order_amounts))\nprint(\"Total sales:\", total)\n",
+        "facilitator": {
+            "rhythm": "Reinforce the accumulator pattern over a real list. Have them name the loop variable before they write the body.",
+            "predict_answer": "The total is 276.",
+            "watch_for": [
+                "Looping with range() and forgetting to index the list.",
+                "Resetting total inside the loop.",
+                "Using = instead of += and keeping only the last amount."
+            ],
+            "debrief": "Looping directly over the list hands you each amount in turn, and the accumulator adds them into one running total."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "nested-loops",
+        "title": "Nested loops",
+        "topic": "A loop inside a loop",
+        "time": "7 min",
+        "summary": "A loop can contain another loop. For every single pass of the outer loop, the entire inner loop runs from start to finish. This is how you work through rows and columns, or grids.",
+        "key_points": [
+            "The inner loop completes fully for each pass of the outer loop.",
+            "Total passes = outer count times inner count.",
+            "Indentation shows which body belongs to which loop.",
+            "Nested loops suit grids, tables, and pairings.",
+            "Keep them shallow; deeply nested loops get hard to read."
+        ],
+        "callout": "If the outer loop runs 3 times and the inner loop runs 4 times, the inner body runs 3 x 4 = 12 times.",
+        "examples": [
+            {
+                "title": "Rows and columns",
+                "code": "for row in range(1, 4):\n    for col in range(1, 4):\n        print(\"row\", row, \"col\", col)\n    print(\"--- end of row\", row, \"---\")\n"
+            },
+            {
+                "title": "Pairing warehouses with products",
+                "code": "warehouses = [\"East\", \"West\"]\nproducts = [\"Mouse\", \"Keyboard\"]\n\nfor warehouse in warehouses:\n    for product in products:\n        print(warehouse, \"stocks\", product)\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Trace the outer/inner relationship slowly: the inner loop finishes before the outer advances.",
+                "Use the row/col print to show the order of output.",
+                "Watch indentation: it determines what is inside the inner loop."
+            ],
+            "transition": "Now build a small sales grid with nested loops."
+        }
+    },
+    {
+        "type": "exercise",
+        "id": "sales-grid",
+        "title": "Practice: Sales Grid",
+        "topic": "Nested loops",
+        "time": "9 min",
+        "goal": "Use nested loops to print every region-and-quarter pair and count the combinations.",
+        "predict": "With 3 regions and 4 quarters, how many region-quarter reports are printed?",
+        "task": "Add an inner for loop over quarters, print each region and quarter, and add 1 to reports each pass.",
+        "starter": "regions = [\"North\", \"South\", \"East\"]\nquarters = [\"Q1\", \"Q2\", \"Q3\", \"Q4\"]\nreports = 0\n\nfor region in regions:\n    pass          # 1. loop over each quarter in quarters\n                  # 2. print(region, quarter)\n                  # 3. add 1 to reports\n\n# Don't touch below this line\nprint(\"Total reports:\", reports)\n",
+        "solution": "regions = [\"North\", \"South\", \"East\"]\nquarters = [\"Q1\", \"Q2\", \"Q3\", \"Q4\"]\nreports = 0\n\nfor region in regions:\n    for quarter in quarters:\n        print(region, quarter)\n        reports += 1\n\n# Don't touch below this line\nprint(\"Total reports:\", reports)\n",
+        "facilitator": {
+            "rhythm": "Capstone rep. Before running, ask them to predict the count (3 x 4). Then confirm with the output.",
+            "predict_answer": "12 reports are printed: 3 regions times 4 quarters.",
+            "watch_for": [
+                "Not indenting the inner loop body inside the outer loop.",
+                "Counting reports in the outer loop instead of the inner loop.",
+                "Looping over range() instead of the lists themselves."
+            ],
+            "debrief": "The inner loop runs fully for each region, so the inner body runs 3 x 4 = 12 times. That product is the heart of nested loops."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "loops-review",
+        "title": "Loops in review",
+        "topic": "Key takeaways",
+        "time": "4 min",
+        "summary": "Before moving on to lists, pause and summarize what loops let us do.",
+        "key_points": [
+            "while repeats as long as a condition stays True.",
+            "Use a counter and += so a while loop eventually stops.",
+            "for with range() repeats a known number of times.",
+            "range(start, stop, step) controls where counting begins, ends, and steps.",
+            "for item in collection walks a list or string directly.",
+            "Use an accumulator to build a running total or count.",
+            "Nested loops pair an outer and inner loop for grids and tables."
+        ],
+        "callout": "Functions name reusable work. Loops repeat work. Together they keep programs short and clear.",
+        "examples": [],
+        "facilitator": {
+            "talking_points": [
+                "Use this as a checkpoint. Ask for one chat answer: a loop is useful because...",
+                "If the group is struggling, pause and re-trace one while loop and one for loop before finishing."
+            ],
+            "transition": "Close by previewing the next session: lists."
+        }
+    },
+    {
+        "type": "concept",
+        "id": "coming-up-next",
+        "title": "Coming up next",
+        "topic": "Python lists",
+        "time": "2 min",
+        "summary": "The next topic is lists: storing many related values in a single, ordered collection that loops can walk through.",
+        "key_points": [
+            "Creating lists and accessing items by index.",
+            "Adding, changing, and removing items.",
+            "Looping over lists to process every item.",
+            "Combining lists with the loop patterns from today."
+        ],
+        "callout": "We already looped over a list today. Next session we go deeper on building and changing them.",
+        "examples": [
+            {
+                "title": "Small preview",
+                "code": "products = [\"Mouse\", \"Keyboard\", \"Monitor\"]\nfor product in products:\n    print(\"In stock:\", product)\n"
+            }
+        ],
+        "facilitator": {
+            "talking_points": [
+                "Use this as a teaser, not a lesson.",
+                "Close by connecting loops and lists: a list holds the data, a loop processes it."
+            ],
+            "transition": "End with reflection."
+        }
+    }
+];
+    const exercises = sections.filter(section => section.type === 'exercise');
+    const STORAGE_KEY = 'python-session-3-progress-loops-v1';
+    const FACILITATOR_KEY = 'python-session-3-facilitator-unlocked-loops-v1';
+    const compilerUrl = 'https://www.pythoncompiler.io/';
+
+    function byId(id) { return document.getElementById(id); }
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+    function loadProgress() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+    }
+    function saveProgress(progress) { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
+    function showToast(message) {
+      const toast = byId('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+    function flashButton(button, originalLabel) {
+      button.textContent = 'Copied ✓';
+      button.disabled = true;
+      setTimeout(() => { button.textContent = originalLabel; button.disabled = false; }, 1500);
+    }
+    function renderNav(index) {
+      const prev = index > 0 ? sections[index - 1] : null;
+      const next = index < sections.length - 1 ? sections[index + 1] : null;
+      return `
+        <nav class="section-nav" aria-label="Section navigation">
+          ${prev ? `<a class="button small" href="#${prev.id}">← ${escapeHtml(prev.title)}</a>` : '<span></span>'}
+          ${next ? `<a class="button small secondary" href="#${next.id}">${escapeHtml(next.title)} →</a>` : '<span></span>'}
+        </nav>
+      `;
+    }
+    function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+      }
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      document.execCommand('copy');
+      textarea.remove();
+      return Promise.resolve();
+    }
+    function renderAgenda() {
+      byId('agendaGrid').innerHTML = sections.map((section, index) => `
+        <a class="agenda-item" href="#${section.id}">
+          <span class="tag ${section.type === 'exercise' ? 'exercise' : ''}">${section.type === 'exercise' ? 'Exercise' : 'Concept'}</span>
+          <strong>${index + 1}. ${escapeHtml(section.title)}</strong>
+          <span>${escapeHtml(section.topic)}</span>
+        </a>
+      `).join('');
+    }
+    function renderExample(example, sectionIndex, exampleIndex) {
+      return `
+        <div class="code-card">
+          <div class="code-card-header">
+            <div class="code-card-title">${escapeHtml(example.title)}</div>
+            <button class="button small copy-example" type="button" data-section-index="${sectionIndex}" data-example-index="${exampleIndex}">Copy code</button>
+          </div>
+          <pre><code class="language-python">${escapeHtml(example.code)}</code></pre>
+        </div>
+      `;
+    }
+    function renderConcept(section, index) {
+      const examples = (section.examples || []).map((example, exampleIndex) => renderExample(example, index, exampleIndex)).join('');
+      return `
+        <article id="${section.id}" class="concept-card">
+          <div class="section-header">
+            <div>
+              <span class="tag">Concept</span>
+              <p class="eyebrow">${escapeHtml(section.topic)}</p>
+              <h2>${escapeHtml(section.title)}</h2>
+              <p class="summary">${escapeHtml(section.summary)}</p>
+            </div>
+          </div>
+          <div class="concept-grid">
+            <div>
+              <h3>Key ideas</h3>
+              <ul class="key-points">${(section.key_points || []).map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
+              ${section.callout ? `<div class="callout-box"><strong>Remember:</strong> ${escapeHtml(section.callout)}</div>` : ''}
+            </div>
+            <div class="example-stack">
+              ${examples || '<div class="callout-box">No code demo for this checkpoint.</div>'}
+            </div>
+          </div>
+          <section class="facilitator-only facilitator-panel" aria-label="Facilitator notes for ${escapeHtml(section.title)}">
+            <h3>Facilitator notes</h3>
+            <p><strong>Talking points:</strong></p>
+            <ul class="common-list">${(section.facilitator.talking_points || []).map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
+            <p><strong>Transition:</strong> ${escapeHtml(section.facilitator.transition || '')}</p>
+          </section>
+          ${renderNav(index)}
+        </article>
+      `;
+    }
+    function renderExercise(section, index) {
+      const progress = loadProgress();
+      return `
+        <article id="${section.id}" class="exercise-card">
+          <div class="section-header">
+            <div>
+              <span class="tag exercise">Exercise</span>
+              <p class="eyebrow">${escapeHtml(section.topic)}</p>
+              <h2>${escapeHtml(section.title)}</h2>
+              <p class="goal">${escapeHtml(section.goal)}</p>
+            </div>
+          </div>
+
+          <div class="task-box"><strong>Your task:</strong> ${escapeHtml(section.task)}</div>
+
+          <div class="button-row">
+            <button class="button primary copy-starter" type="button" data-section-index="${index}">Copy starter code</button>
+            <a class="button secondary" target="_blank" rel="noopener" href="${compilerUrl}">Open PythonCompiler.io</a>
+            <label class="done-check"><input type="checkbox" data-progress-id="${section.id}" ${progress[section.id] ? 'checked' : ''}> Mark complete</label>
+          </div>
+
+          <details open>
+            <summary>Starter code</summary>
+            <pre><code class="language-python">${escapeHtml(section.starter)}</code></pre>
+          </details>
+
+          <div class="solution-reveal" data-section-index="${index}">
+            <p class="solution-reveal-label">Solution</p>
+            <div class="solution-locked">
+              <form class="solution-form" data-section-index="${index}">
+                <label class="hint">Enter the code to reveal the solution.</label>
+                <div class="solution-code-row">
+                  <input type="password" class="solution-code-input" placeholder="Code…" autocomplete="off" aria-label="Solution code" />
+                  <button class="button small primary" type="submit">Reveal solution</button>
+                </div>
+                <div class="solution-error error"></div>
+              </form>
+            </div>
+            <div class="solution-unlocked" hidden>
+              <div class="button-row"><button class="button small copy-solution" type="button" data-section-index="${index}">Copy solution code</button></div>
+              <pre><code class="language-python">${escapeHtml(section.solution)}</code></pre>
+            </div>
+          </div>
+
+          <section class="facilitator-only facilitator-panel" aria-label="Facilitator content for ${escapeHtml(section.title)}">
+            <h3>Facilitator notes</h3>
+            <p><strong>How to run it:</strong> ${escapeHtml(section.facilitator.rhythm)}</p>
+            ${section.facilitator.predict_answer ? '<p><strong>Predict answer:</strong> ' + escapeHtml(section.facilitator.predict_answer) + '</p>' : ''}
+            <p><strong>Watch for:</strong></p>
+            <ul class="common-list">${section.facilitator.watch_for.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
+            <p><strong>Debrief:</strong> ${escapeHtml(section.facilitator.debrief)}</p>
+            <details class="solution-box">
+              <summary>Solution code</summary>
+              <div class="button-row"><button class="button small copy-solution" type="button" data-section-index="${index}">Copy solution code</button></div>
+              <pre><code class="language-python">${escapeHtml(section.solution)}</code></pre>
+            </details>
+          </section>
+          ${renderNav(index)}
+        </article>
+      `;
+    }
+    function getCurrentSectionIndex() {
+      const hash = window.location.hash.replace(/^#/, '');
+      const index = sections.findIndex(section => section.id === hash);
+      return index >= 0 ? index : 0;
+    }
+    function updateActiveAgenda() {
+      const currentSection = sections[getCurrentSectionIndex()];
+      document.querySelectorAll('#agendaGrid .agenda-item').forEach(item => item.classList.remove('active'));
+      if (!currentSection) return;
+      const activeItem = document.querySelector(`#agendaGrid a[href="#${currentSection.id}"]`);
+      if (activeItem) activeItem.classList.add('active');
+    }
+    function renderCurrentSection() {
+      const index = getCurrentSectionIndex();
+      const section = sections[index];
+      byId('sections').innerHTML = section.type === 'concept' ? renderConcept(section, index) : renderExercise(section, index);
+      bindControls();
+      updateProgressText();
+      if (window.Prism) Prism.highlightAll();
+      updateActiveAgenda();
+    }
+    function scrollToSectionContent() {
+      const sectionList = byId('sections');
+      if (!sectionList) return;
+      sectionList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function bindControls() {
+      document.querySelectorAll('.copy-example').forEach(button => {
+        button.addEventListener('click', () => {
+          const section = sections[Number(button.dataset.sectionIndex)];
+          const example = section.examples[Number(button.dataset.exampleIndex)];
+          copyText(example.code).then(() => { showToast('Demo code copied'); flashButton(button, 'Copy code'); });
+        });
+      });
+      document.querySelectorAll('.copy-starter').forEach(button => {
+        button.addEventListener('click', () => {
+          const section = sections[Number(button.dataset.sectionIndex)];
+          copyText(section.starter).then(() => { showToast('Starter code copied'); flashButton(button, 'Copy starter code'); });
+        });
+      });
+      document.querySelectorAll('.copy-solution').forEach(button => {
+        button.addEventListener('click', () => {
+          const section = sections[Number(button.dataset.sectionIndex)];
+          copyText(section.solution).then(() => { showToast('Solution code copied'); flashButton(button, 'Copy solution code'); });
+        });
+      });
+      document.querySelectorAll('.solution-form').forEach(form => {
+        form.addEventListener('submit', event => {
+          event.preventDefault();
+          const input = form.querySelector('.solution-code-input');
+          const errorEl = form.querySelector('.solution-error');
+          if (normalizePassphrase(input.value) === normalizePassphrase(SOLUTION_PASSPHRASE)) {
+            const reveal = form.closest('.solution-reveal');
+            reveal.querySelector('.solution-locked').hidden = true;
+            const unlocked = reveal.querySelector('.solution-unlocked');
+            unlocked.hidden = false;
+            if (window.Prism) Prism.highlightAllUnder(unlocked);
+          } else {
+            errorEl.textContent = 'Incorrect code.';
+            input.value = '';
+            input.focus();
+          }
+        });
+      });
+      document.querySelectorAll('input[data-progress-id]').forEach(input => {
+        input.addEventListener('change', () => {
+          const progress = loadProgress();
+          progress[input.dataset.progressId] = input.checked;
+          saveProgress(progress);
+          updateProgressText();
+        });
+      });
+    }
+    function updateProgressText() {
+      const progress = loadProgress();
+      const done = exercises.filter(ex => progress[ex.id]).length;
+      const progressText = byId('progressText');
+      const progressFill = byId('progressFill');
+      if (progressText) progressText.textContent = `${done} of ${exercises.length} exercises completed`;
+      if (progressFill) progressFill.style.width = `${Math.round((done / exercises.length) * 100)}%`;
+    }
+    function setFacilitatorMode(on) {
+      document.body.classList.toggle('facilitator-unlocked', on);
+      if (on) { sessionStorage.setItem(FACILITATOR_KEY, 'true'); }
+      else { sessionStorage.removeItem(FACILITATOR_KEY); }
+    }
+    function openFacilitatorModal() {
+      byId('facilitatorError').textContent = '';
+      byId('facilitatorPassphrase').value = '';
+      byId('facilitatorModal').classList.add('show');
+      setTimeout(() => byId('facilitatorPassphrase').focus(), 0);
+    }
+    function closeFacilitatorModal() { byId('facilitatorModal').classList.remove('show'); }
+    function normalizePassphrase(value) { return String(value || '').trim().toLowerCase(); }
+
+    byId('openFacilitator').addEventListener('click', () => {
+      if (document.body.classList.contains('facilitator-unlocked')) { showToast('Facilitator content is already visible'); }
+      else { openFacilitatorModal(); }
+    });
+    byId('cancelFacilitator').addEventListener('click', closeFacilitatorModal);
+    byId('facilitatorModal').addEventListener('click', event => { if (event.target === byId('facilitatorModal')) closeFacilitatorModal(); });
+    byId('facilitatorForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const entered = normalizePassphrase(byId('facilitatorPassphrase').value);
+      const expected = normalizePassphrase(FACILITATOR_PASSPHRASE);
+      if (entered === expected) {
+        setFacilitatorMode(true);
+        closeFacilitatorModal();
+        showToast('Facilitator content unlocked');
+      } else {
+        byId('facilitatorError').textContent = 'That passphrase did not match. Continue with the attendee view.';
+      }
+    });
+    byId('lockFacilitator').addEventListener('click', () => {
+      setFacilitatorMode(false);
+      showToast('Facilitator content hidden');
+    });
+    let timerInterval = null;
+    let timerSeconds = 0;
+    let timerStarted = false;
+    function formatTime(secs) {
+      const m = Math.floor(secs / 60);
+      const s = secs % 60;
+      return `${m}:${String(s).padStart(2, '0')}`;
+    }
+    function updateTimerDisplay() {
+      const display = byId('timerDisplay');
+      if (!display) return;
+      display.textContent = formatTime(timerSeconds);
+      display.classList.toggle('warning', timerSeconds > 0 && timerSeconds <= 60);
+      display.classList.toggle('expired', timerStarted && timerSeconds === 0 && !timerInterval);
+    }
+    byId('timerStart').addEventListener('click', () => {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        byId('timerStart').textContent = 'Start';
+      } else {
+        const mins = parseInt(byId('timerMinutes').value, 10) || 5;
+        timerSeconds = mins * 60;
+        timerStarted = true;
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+          timerSeconds = Math.max(0, timerSeconds - 1);
+          updateTimerDisplay();
+          if (timerSeconds === 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            byId('timerStart').textContent = 'Start';
+            showToast('Time is up!');
+          }
+        }, 1000);
+        byId('timerStart').textContent = 'Pause';
+      }
+    });
+    byId('timerReset').addEventListener('click', () => {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerSeconds = 0;
+      timerStarted = false;
+      const display = byId('timerDisplay');
+      display.textContent = '—';
+      display.classList.remove('warning', 'expired');
+      byId('timerStart').textContent = 'Start';
+    });
+    byId('resetProgress')?.addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      renderCurrentSection();
+      showToast('Progress reset');
+    });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') closeFacilitatorModal(); });
+    function setupAgendaFilter() {
+      document.querySelectorAll('#agendaFilter [data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#agendaFilter [data-filter]').forEach(b => b.classList.remove('active-filter'));
+          btn.classList.add('active-filter');
+          const filter = btn.dataset.filter;
+          document.querySelectorAll('#agendaGrid .agenda-item').forEach(item => {
+            const type = item.querySelector('.tag.exercise') ? 'exercise' : 'concept';
+            item.style.display = (filter === 'all' || filter === type) ? '' : 'none';
+          });
+        });
+      });
+    }
+    window.addEventListener('hashchange', () => {
+      if (window.location.hash === '#facilitator') {
+        openFacilitatorModal();
+        return;
+      }
+      renderCurrentSection();
+      scrollToSectionContent();
+    });
+    renderAgenda();
+    setupAgendaFilter();
+    if (sessionStorage.getItem(FACILITATOR_KEY) === 'true') setFacilitatorMode(true);
+    if (window.location.hash === '#facilitator') openFacilitatorModal();
+    renderCurrentSection();
+  </script>
+</body>
+</html>
